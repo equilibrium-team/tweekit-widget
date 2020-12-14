@@ -54,8 +54,7 @@ const generateConfig = (env = 'development') => {
         publicPath: "./_Output/tweekit/qa",
         filename: "tweekit_bundle.js",
         library: 'TweekIt',
-        libraryTarget: 'window',
-        libraryExport: 'default'
+        libraryTarget: 'umd'
     },
   }
 
