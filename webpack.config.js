@@ -61,7 +61,10 @@ const generateConfig = (env = 'development') => {
   const envConfig = {
     development: { ...developmentConfig },
     qa: { ...qaConfig },
-    production : { ...productionConfig }
+    production : { ...productionConfig },
+    "development-npm": { ...developmentConfig },
+    "qa-npm": { ...qaConfig },
+    "production-npm" : { ...productionConfig }
   }[env]
 
   config = {
