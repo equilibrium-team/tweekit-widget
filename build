@@ -1,0 +1,142 @@
+#!/usr/bin/env node
+
+const execSync = require("child_process").execSync;
+const fs = require("fs");
+const path = require("path");
+//const yazl = require("yazl");
+
+const BUILD_MODE_DBG = 'debug';
+const BUILD_MODE_REL = 'release';
+
+let stdout = null;
+let projDir = process.cwd();
+let installDir = "_Output/tweekit";
+
+function recurseForFileNames(dir, done) {
+    let results = [];
+    fs.readdir(dir, (err, list) => {
+        if (err)
+            return done(err);
+        let pending = list.length;
+        if (!pending)
+            return done(null, results);
+        list.forEach((file) => {
+            file = path.resolve(dir, file);
+            fs.stat(file, (err, stat) => {
+                if (stat && stat.isDirectory()) {
+                    recurseForFileNames(file, (err, res) => {
+                        results = results.concat(res);
+                        if (!--pending)
+                            done(null, results);
+                    });
+                }
+                else {
+                    results.push(file);
+                    if (!--pending)
+                        done(null, results);
+                }
+            });
+        });
+    });
+}
+
+async function movePkgFile(pkgFilename, version) {
+    let d = path.join(packageDir, version);
+    let f = path.join(d, pkgFilename);
+    const exists = fs.existsSync(f);
+    if (!exists) {
+        fs.mkdirSync(d);
+        fs.copyFileSync(pkgFilename, f, fs.constants.COPYFILE_EXCL)
+        execSync("rm " + pkgFilename);
+    }
+    else {
+        console.log("Error:file already at dst");
+    }
+    console.log(`Build published to:${f}`);
+    return 0;
+}
+
+async function publishPkgFile(files, appName, version) {
+    let r = 0;
+    var pkg = new yazl.ZipFile();
+    for (let i = 0; i < files.length; i++) {
+        pkg.addFile(files[i], path.basename(files[i]));
+    }
+    pkg.end();
+
+    let f = `${appName}-${version}.zip`;
+    let ws = fs.createWriteStream(f);
+    await new Promise((resolve) => {
+        pkg.outputStream.pipe(ws).on("close", resolve)
+    });
+
+    return movePkgFile(f, version);
+}
+
+function clean(buildMode) {
+    let installPath = path.join(installDir, buildMode);
+
+    console.log(`Cleaning install path:${installPath}...`);
+    if(fs.existsSync(installPath))
+        execSync("rm -rf " + installPath);
+    console.log("done");
+}
+
+function build(buildMode) {
+    console.log(`Building ${buildMode}...`);
+    if(buildMode == BUILD_MODE_REL) {
+        //In release, before building bump the version
+        execSync("npm version patch");
+        execSync("node node_modules/webpack/bin/webpack.js --mode production");
+    }
+    else {
+        execSync("node node_modules/webpack/bin/webpack.js --mode development");
+    }
+    console.log("done");
+}
+
+function usage() {
+    console.log("Usage:  build [cmds]");
+    console.log("Commands:");
+    console.log("\tc - Clean product of previous build");
+    console.log("\tb - Build debug");
+    console.log("\tr - Build release");
+    console.log("Notes:");
+    console.log("\tMust be run from your projects main directory");
+    console.log("\tThe b and r commands are exclusive");
+}
+
+function main() {
+    let buildMode = BUILD_MODE_DBG;
+
+    if(process.argv.length == 3) {
+        let cmds = process.argv[2];
+
+        //Special checks for b and r
+        if(cmds.indexOf("b") != -1 && cmds.indexOf("r") != -1) {
+            throw("Commands b and r are mutually exclusive");
+
+        }
+        if(cmds.indexOf("r") != -1) {
+            buildMode = BUILD_MODE_REL;
+        }
+
+        //Get down to business
+        if(cmds.indexOf("c") != -1) {
+            clean(buildMode);
+        }
+        
+        if(cmds.indexOf("b") != -1) {
+            build(buildMode);
+        }
+        
+        if(cmds.indexOf("r") != -1) {
+            build(buildMode);
+        }
+    }
+    else {
+        usage();
+    }
+}
+
+main();
