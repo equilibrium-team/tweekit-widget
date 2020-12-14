@@ -17,6 +17,15 @@ const generateConfig = (env = 'development') => {
     "production": {
       path: path.resolve(__dirname, './_Output/tweekit/release')
     },
+    "development-npm": {
+      path: path.resolve(__dirname, './dist/debug')
+    },
+    "qa-npm": {
+      path: path.resolve(__dirname, './dist/qa')
+    },
+    "production-npm": {
+      path: path.resolve(__dirname, './dist/release')
+    },
   }[env]
 
   const mode = env === "production" ? "production" : "development"
