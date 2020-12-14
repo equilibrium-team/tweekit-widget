@@ -4,7 +4,7 @@
   "description": "Tweek It widget!",
   "entry point": "dist/release/tweekit_bundle.js",
   "organization": "tweekit",
-  "main": "tweekit.js",
+  "main": "dist/release/tweekit_bundle.js",
   "scripts": {
     "test": "webpack-dev-server --mode development"
   },
