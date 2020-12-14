@@ -1,5 +1,14 @@
-window["TweekIt"] =
-/******/ (function(modules) { // webpackBootstrap
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else if(typeof exports === 'object')
+		exports["TweekIt"] = factory();
+	else
+		root["TweekIt"] = factory();
+})(global, function() {
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -253,7 +262,7 @@ eval("\n\nvar isOldIE = function isOldIE() {\n  var memo;\n  return function mem
 /*! exports provided: name, version, description, entry point, organization, main, scripts, author, license, devDependencies, dependencies, default */
 /***/ (function(module) {
 
-eval("module.exports = JSON.parse(\"{\\\"name\\\":\\\"tweekit\\\",\\\"version\\\":\\\"1.0.3\\\",\\\"description\\\":\\\"Tweek It widget!\\\",\\\"entry point\\\":\\\"dist/release/tweekit_bundle.js\\\",\\\"organization\\\":\\\"tweekit\\\",\\\"main\\\":\\\"dist/release/tweekit_bundle.js\\\",\\\"scripts\\\":{\\\"test\\\":\\\"webpack-dev-server --mode development\\\"},\\\"author\\\":\\\"Jose Adrian Buctuanon\\\",\\\"license\\\":\\\"ISC\\\",\\\"devDependencies\\\":{\\\"@babel/cli\\\":\\\"^7.12.1\\\",\\\"@babel/core\\\":\\\"^7.11.4\\\",\\\"@babel/plugin-transform-runtime\\\":\\\"^7.11.0\\\",\\\"@babel/preset-env\\\":\\\"^7.11.0\\\",\\\"babel-loader\\\":\\\"^8.1.0\\\",\\\"css-loader\\\":\\\"^4.2.2\\\",\\\"style-loader\\\":\\\"^1.2.1\\\",\\\"webpack\\\":\\\"^4.44.1\\\",\\\"webpack-cli\\\":\\\"^3.3.12\\\",\\\"webpack-dev-server\\\":\\\"^3.11.0\\\"},\\\"dependencies\\\":{\\\"@babel/runtime\\\":\\\"^7.11.2\\\",\\\"croppie\\\":\\\"^2.6.5\\\",\\\"crypto-random-string\\\":\\\"^3.2.0\\\",\\\"jquery\\\":\\\"^3.5.1\\\",\\\"js-base64\\\":\\\"^3.6.0\\\"}}\");\n\n//# sourceURL=webpack://TweekIt/./package.json?");
+eval("module.exports = JSON.parse(\"{\\\"name\\\":\\\"tweekit\\\",\\\"version\\\":\\\"1.0.5\\\",\\\"description\\\":\\\"Tweek It widget!\\\",\\\"entry point\\\":\\\"dist/release/tweekit_bundle.js\\\",\\\"organization\\\":\\\"tweekit\\\",\\\"main\\\":\\\"dist/release/tweekit_bundle.js\\\",\\\"scripts\\\":{\\\"test\\\":\\\"webpack-dev-server --mode development\\\"},\\\"author\\\":\\\"Jose Adrian Buctuanon\\\",\\\"license\\\":\\\"ISC\\\",\\\"devDependencies\\\":{\\\"@babel/cli\\\":\\\"^7.12.1\\\",\\\"@babel/core\\\":\\\"^7.11.4\\\",\\\"@babel/plugin-transform-runtime\\\":\\\"^7.11.0\\\",\\\"@babel/preset-env\\\":\\\"^7.11.0\\\",\\\"babel-loader\\\":\\\"^8.1.0\\\",\\\"css-loader\\\":\\\"^4.2.2\\\",\\\"style-loader\\\":\\\"^1.2.1\\\",\\\"webpack\\\":\\\"^4.44.1\\\",\\\"webpack-cli\\\":\\\"^3.3.12\\\",\\\"webpack-dev-server\\\":\\\"^3.11.0\\\"},\\\"dependencies\\\":{\\\"@babel/runtime\\\":\\\"^7.11.2\\\",\\\"croppie\\\":\\\"^2.6.5\\\",\\\"crypto-random-string\\\":\\\"^3.2.0\\\",\\\"jquery\\\":\\\"^3.5.1\\\",\\\"js-base64\\\":\\\"^3.6.0\\\"}}\");\n\n//# sourceURL=webpack://TweekIt/./package.json?");
 
 /***/ }),
 
@@ -303,4 +312,5 @@ eval("module.exports = __webpack_require__(/*! ./src/tweekit.js */\"./src/tweeki
 
 /***/ })
 
-/******/ })["default"];
+/******/ });
+});
