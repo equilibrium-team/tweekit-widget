@@ -32,6 +32,7 @@ const generateConfig = (env = 'development') => {
 
   let config = {
     mode,
+    target: 'web',
     entry: ["./src/tweekit.js"],
     module: {
       rules: [
