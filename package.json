@@ -1,13 +1,13 @@
 {
   "name": "tweekit",
-  "version": "1.0.69",
-  "description": "Tweek It!",
+  "version": "1.0.0",
+  "description": "Tweek It widget!",
   "entry point": "_Output/tweekit/tweekit_bundle.js",
   "main": "tweekit.js",
   "scripts": {
     "test": "webpack-dev-server --mode development"
   },
-  "author": "Tweekit",
+  "author": "Jose Adrian Buctuanon",
   "license": "ISC",
   "devDependencies": {
     "@babel/cli": "^7.12.1",
