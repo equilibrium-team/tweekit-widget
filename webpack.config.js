@@ -28,7 +28,17 @@ const generateConfig = (env = 'development') => {
     },
   }[env]
 
-  const mode = env === "production" ? "production" : "development"
+  const mode = env === "production" ? "production" : "development";
+  const isNPM = env.includes('-npm');
+
+  const config_output = isNPM
+    ? {
+      libraryTarget: 'umd'
+    }
+    : {
+      libraryTarget: 'window',
+      libraryExport: 'default'
+    }
 
   let config = {
     mode,
@@ -54,7 +64,7 @@ const generateConfig = (env = 'development') => {
         publicPath: "./_Output/tweekit/qa",
         filename: "tweekit_bundle.js",
         library: 'TweekIt',
-        libraryTarget: 'umd'
+        ...config_output
     },
   }
 
@@ -71,6 +81,8 @@ const generateConfig = (env = 'development') => {
     ...config,
     ...envConfig
   }
+
+  console.log(JSON.stringify(config,null,2))
 
   return (config)
 }

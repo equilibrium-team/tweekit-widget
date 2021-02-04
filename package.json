@@ -1,6 +1,6 @@
 {
   "name": "tweekit",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Tweek It widget!",
   "entry point": "dist/release/tweekit_bundle.js",
   "organization": "tweekit",
