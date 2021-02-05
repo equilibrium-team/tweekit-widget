@@ -3,6 +3,9 @@
 const execSync = require("child_process").execSync;
 const fs = require("fs");
 const path = require("path");
+const colors = require('colors');
+const separationbar = colors.green('==================================================================================================')
+
 //const yazl = require("yazl");
 
 const BUILD_MODE_DBG = 'debug';
@@ -11,6 +14,29 @@ const BUILD_MODE_REL = 'release';
 let stdout = null;
 let projDir = process.cwd();
 let installDir = "_Output/tweekit";
+
+function executeCommand(cmd, isSilent = false){
+    if (!isSilent) {
+        console.log('\n')
+        console.log('\n')
+        console.log(colors.green(separationbar))
+        console.log(colors.green('Performing :'))
+        console.log(colors.yellow(cmd))
+        console.log(colors.green(separationbar))
+        console.log('\n')
+    }
+
+    const runCMd = execSync(cmd).toString()
+
+    if (!isSilent) {
+        console.log(runCMd)
+    }
+
+    if (!isSilent) {
+        console.log(colors.green(separationbar))
+        console.log('\n')
+    }
+}
 
 function recurseForFileNames(dir, done) {
     let results = [];
@@ -78,16 +104,22 @@ function clean(buildMode) {
 
     console.log(`Cleaning install path:${installPath}...`);
     if(fs.existsSync(installPath))
-        execSync("rm -rf " + installPath);
+        executeCommand("rm -rf " + installPath);
     console.log("done");
 }
 
-function build(buildMode) {
+function build(buildMode, buildType) {
     console.log(`Building ${buildMode}...`);
-    if(buildMode == BUILD_MODE_REL) {
+    if(buildMode === 'r') {
         //In release, before building bump the version
-        execSync("npm version patch");
-        execSync("node node_modules/webpack/bin/webpack.js --mode production");
+        executeCommand("npm version patch");
+
+        if (buildType) {
+            executeCommand("node node_modules/webpack/bin/webpack.js --mode production-npm");
+            executeCommand("npm publish");
+        } else {
+            executeCommand("node node_modules/webpack/bin/webpack.js --mode production");
+        }
     }
     else {
         execSync("node node_modules/webpack/bin/webpack.js --mode development");
@@ -96,45 +128,51 @@ function build(buildMode) {
 }
 
 function usage() {
-    console.log("Usage:  build [cmds]");
+    executeCommand("clear", true)
+    console.log('\n');
+    console.log(separationbar);
+    console.log('\n');
+    console.log(`Usage:  build [${colors.green("cmds")}]`);
+    console.log('\n');
     console.log("Commands:");
-    console.log("\tc - Clean product of previous build");
-    console.log("\tb - Build debug");
-    console.log("\tr - Build release");
+    console.log('\n');
+    console.log(`\t ${colors.green("c")} -  Clean product of previous build`);
+    console.log(`\t ${colors.green("b")}  - Build debug`);
+    console.log(`\t ${colors.green("r")}  - Build release`);
+    console.log('\n');
+    console.log("Options:");
+    console.log('\n');
+    console.log(`\t ${colors.red("--npm")} - use this if you want the npm version of tweekit ( not applicable for local )`);
     console.log("Notes:");
+    console.log('\n');
     console.log("\tMust be run from your projects main directory");
-    console.log("\tThe b and r commands are exclusive");
+    console.log('\n');
+    console.log(separationbar);
+    console.log('\n');
 }
 
 function main() {
-    let buildMode = BUILD_MODE_DBG;
 
-    if(process.argv.length == 3) {
-        let cmds = process.argv[2];
+    console.log('process.argv ===  ', process.argv)
 
-        //Special checks for b and r
-        if(cmds.indexOf("b") != -1 && cmds.indexOf("r") != -1) {
-            throw("Commands b and r are mutually exclusive");
 
-        }
-        if(cmds.indexOf("r") != -1) {
-            buildMode = BUILD_MODE_REL;
-        }
+    const allowedBuildModes = ['b','r', 'c']
+    const allowedBuildTypes = ['--npm']
 
-        //Get down to business
-        if(cmds.indexOf("c") != -1) {
+    const [
+        ,,
+        buildMode,
+        buildType
+    ] = process.argv
+
+    if (buildMode && allowedBuildModes.includes(buildMode)) {
+        if (buildMode === 'c') {
             clean(buildMode);
+        } else {
+            // either b or r
+            build(buildMode,buildType);
         }
-        
-        if(cmds.indexOf("b") != -1) {
-            build(buildMode);
-        }
-        
-        if(cmds.indexOf("r") != -1) {
-            build(buildMode);
-        }
-    }
-    else {
+    } else {
         usage();
     }
 }
