@@ -108,22 +108,65 @@ function clean(buildMode) {
     console.log("done");
 }
 
-function build(buildMode, buildType) {
-    console.log(`Building ${buildMode}...`);
-    if(buildMode === 'r') {
+function checkIfFlagsAreValid(buildFlags) {
+    const allowedBuildTypes = ['--npm', '--deploy-to-npm']
+    let valid = true
+
+    buildFlags.map(f => {
+        valid = allowedBuildTypes.includes(f)
+
+        // special conditions
+        if (f === '--deploy-to-npm' && !buildFlags.includes('--npm')) {
+            valid = false
+            console.log(colors.red('\n\n\n'+separationbar))
+            console.log(colors.red('ERROR: CANNOT USE DEPLOY TO NPM WITHOUT --npm FLAG'))
+            console.log(colors.red(separationbar+'\n\n\n'))
+        }
+    })
+
+    return valid
+}
+
+function build(buildMode, buildFlags) {
+    // check if flags are valid
+    const isValid = checkIfFlagsAreValid(buildFlags)
+    if (!isValid) {
+        usage();
+        // if error do not proceed
+        return false;
+    }
+
+    const makeNpmBuild = buildFlags.includes('--npm')
+    const deployToNPM = buildFlags.includes('--deploy-to-npm')
+    const isDeployableToNPM = buildMode === 'r' && makeNpmBuild && deployToNPM
+
+    const suffixIfNpm = makeNpmBuild ? '-npm' : ''
+    const webpackCmd = 'node_modules/webpack/bin/webpack.js'
+
+    if (makeNpmBuild) {
+        console.log(`Building the npm version of ${buildMode}...`);
+    } else {
+        console.log(`Building a standard version of ${buildMode}...`);
+    }
+
+    if(isDeployableToNPM) {
         //In release, before building bump the version
         executeCommand("npm version patch");
+    }
 
-        if (buildType) {
-            executeCommand("node node_modules/webpack/bin/webpack.js --mode production-npm");
-            executeCommand("npm publish");
-        } else {
-            executeCommand("node node_modules/webpack/bin/webpack.js --mode production");
-        }
+    if(buildMode === 'r') {
+        executeCommand(`node ${webpackCmd} --env NODE_ENV=production${suffixIfNpm}`);
+    } else {
+        executeCommand(`node ${webpackCmd} --env NODE_ENV=development${suffixIfNpm}`);
     }
-    else {
-        execSync("node node_modules/webpack/bin/webpack.js --mode development");
+
+    // after everything else is built and the
+    // buildmode is release make sure
+    // to publish it
+    if(isDeployableToNPM) {
+        executeCommand("npm publish");
     }
+
     console.log("done");
 }
 
@@ -152,25 +195,22 @@ function usage() {
 }
 
 function main() {
-
-    console.log('process.argv ===  ', process.argv)
-
-
     const allowedBuildModes = ['b','r', 'c']
-    const allowedBuildTypes = ['--npm']
 
     const [
         ,,
         buildMode,
-        buildType
+        ...buildFlags
     ] = process.argv
+
+    console.log('buildType === ', buildFlags)
 
     if (buildMode && allowedBuildModes.includes(buildMode)) {
         if (buildMode === 'c') {
             clean(buildMode);
         } else {
             // either b or r
-            build(buildMode,buildType);
+            build(buildMode, buildFlags);
         }
     } else {
         usage();

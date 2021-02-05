@@ -61,7 +61,6 @@ const generateConfig = (env = 'development') => {
     resolve: { extensions: ["*", ".js", ".jsx"] },
     output: {
         path: ENV_CONFIG.path,
-        publicPath: "./_Output/tweekit/qa",
         filename: "tweekit_bundle.js",
         library: 'TweekIt',
         ...config_output
