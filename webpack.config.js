@@ -7,31 +7,28 @@ const qaConfig = require('./config/qa')
 const productionConfig = require('./config/production')
 
 const generateConfig = (env = 'development') => {
+  const [ buildMode , isNPM ] = env.split('-')
+  const ENV_IS_NPM = isNPM === 'npm';
+
+  const ENV_OUTPUTFOLDER = isNPM
+    ? './dist'
+    : './_Output/tweekit'
+
   const ENV_CONFIG = {
     "development": {
-      path: path.resolve(__dirname, './_Output/tweekit/debug')
+      path: path.resolve(__dirname, `${ENV_OUTPUTFOLDER}/debug`)
     },
     "qa": {
-      path: path.resolve(__dirname, './_Output/tweekit/qa')
+      path: path.resolve(__dirname, `${ENV_OUTPUTFOLDER}/qa`)
     },
     "production": {
-      path: path.resolve(__dirname, './_Output/tweekit/release')
+      path: path.resolve(__dirname, `${ENV_OUTPUTFOLDER}/release`)
     },
-    "development-npm": {
-      path: path.resolve(__dirname, './dist/debug')
-    },
-    "qa-npm": {
-      path: path.resolve(__dirname, './dist/qa')
-    },
-    "production-npm": {
-      path: path.resolve(__dirname, './dist/release')
-    },
-  }[env]
+  }[buildMode]
 
   const mode = env === "production" ? "production" : "development";
-  const isNPM = env.includes('-npm');
 
-  const config_output = isNPM
+  const config_output = ENV_IS_NPM
     ? {
       libraryTarget: 'umd'
     }
@@ -43,7 +40,9 @@ const generateConfig = (env = 'development') => {
   let config = {
     mode,
     target: 'node',
-    entry: ["./src/tweekit.js"],
+    entry: {
+      "tweekit-widget": "./src/tweekit.js"
+    },
     module: {
       rules: [
           {
@@ -61,7 +60,7 @@ const generateConfig = (env = 'development') => {
     resolve: { extensions: ["*", ".js", ".jsx"] },
     output: {
         path: ENV_CONFIG.path,
-        filename: "tweekit_bundle.js",
+        filename: "[name].min.js",
         library: 'TweekIt',
         ...config_output
     },
