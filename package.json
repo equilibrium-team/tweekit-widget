@@ -1,5 +1,5 @@
 {
-  "name": "tweekit",
+  "name": "tweekit-widget",
   "version": "1.0.0",
   "description": "Tweek It widget!",
   "entry point": "dist/release/tweekit-widget.min.js",
@@ -11,7 +11,7 @@
   "scripts": {
     "test": "webpack-dev-server --mode development"
   },
-  "author": "Jose Adrian Buctuanon",
+  "author": "Equilibrium",
   "license": "ISC",
   "devDependencies": {
     "@babel/cli": "^7.12.1",
