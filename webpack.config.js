@@ -1,10 +1,17 @@
 const path = require("path");
 const webpack = require("webpack");
+const { version } = require('./package.json');
 
 
 const developmentConfig = require('./config/development')
 const qaConfig = require('./config/qa')
 const productionConfig = require('./config/production')
+
+const MODULE_BANNER = `
+  ======================================================
+          TWEEKIT WIDGET VERSION ${version}
+  ======================================================
+`
 
 const generateConfig = (env = 'development') => {
   const [ buildMode , isNPM ] = env.split('-')
@@ -79,6 +86,9 @@ const generateConfig = (env = 'development') => {
     ...config,
     ...envConfig
   }
+
+  config.plugins.push(new webpack.BannerPlugin(MODULE_BANNER))
+
 
   console.log(JSON.stringify(config,null,2))
 
