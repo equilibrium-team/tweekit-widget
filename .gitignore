@@ -5,6 +5,8 @@
 /yarn.lock
 node_modules
 .DS_Store
+_Output/tweekit/qa/tweekit-widget.min.js
+_Output/tweekit/debug/tweekit-widget.min.js
 _Installed
 ./build
 build
