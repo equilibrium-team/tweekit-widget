@@ -54,11 +54,11 @@ const generateConfig = (env = 'development') => {
         umd: 'croppie',
       },
       'js-base64': {
-        root: 'croppie',
-        commonjs2: 'croppie',
-        commonjs: 'croppie',
-        amd: 'croppie',
-        umd: 'croppie',
+        root: 'js-base64',
+        commonjs2: 'js-base64',
+        commonjs: 'js-base64',
+        amd: 'js-base64',
+        umd: 'js-base64',
       }
     }]
   }: {}
