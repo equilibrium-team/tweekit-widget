@@ -38,27 +38,30 @@ const generateConfig = (env = 'development') => {
   const config_output = ENV_IS_NPM
     ? {
       libraryTarget: 'umd',
-      externals: [{
-        croppie: {
-          root: 'croppie',
-          commonjs2: 'croppie',
-          commonjs: 'croppie',
-          amd: 'croppie',
-          umd: 'croppie',
-        },
-        'js-base64': {
-          root: 'croppie',
-          commonjs2: 'croppie',
-          commonjs: 'croppie',
-          amd: 'croppie',
-          umd: 'croppie',
-        }
-      }]
     }
     : {
       libraryTarget: 'window',
       libraryExport: 'default'
     }
+
+  const npmEssentialsKeys = ENV_IS_NPM ? {
+    externals: [{
+      croppie: {
+        root: 'croppie',
+        commonjs2: 'croppie',
+        commonjs: 'croppie',
+        amd: 'croppie',
+        umd: 'croppie',
+      },
+      'js-base64': {
+        root: 'croppie',
+        commonjs2: 'croppie',
+        commonjs: 'croppie',
+        amd: 'croppie',
+        umd: 'croppie',
+      }
+    }]
+  }: {}
 
   let config = {
     mode,
@@ -87,6 +90,7 @@ const generateConfig = (env = 'development') => {
         library: 'TweekIt',
         ...config_output
     },
+    ...npmEssentialsKeys
   }
 
   const envConfig = {
