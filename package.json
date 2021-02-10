@@ -2,9 +2,9 @@
   "name": "tweekit-widget",
   "version": "1.0.13",
   "description": "Tweek It widget!",
-  "entry point": "src/tweekit.js",
+  "entry point": "dist/release/tweekit-widget.min.js",
   "organization": "equilibrium-team",
-  "main": "src/tweekit.js",
+  "main": "dist/release/tweekit-widget.min.js",
   "publishConfig": {
     "access": "public"
   },
