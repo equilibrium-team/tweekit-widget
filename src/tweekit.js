@@ -397,7 +397,9 @@ export default class TweekIt {
         }
 
         if ( typeof message === 'function' ) {
-            console.log('setMessage message IS A FUNCTION === ', typeof message)
+            console.log('setMessage FUNCTION TYPE === ', typeof message)
+            console.log('setMessage FUNCTION VALUE === ', message)
+            console.log('setMessage FUNCTION VALUE EXE === ', message())
             this._container.innerHTML = message()
         }
     }
