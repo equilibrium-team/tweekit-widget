@@ -388,18 +388,15 @@ export default class TweekIt {
     }
 
     _setMessage(message) {
-        const {
-            defaultMessageContainer: containerEl
-        } = this._options
+        console.log('setMessage message === ', message)
+        console.log('setMessage message type === ', typeof message)
 
-        if (containerEl) {
-            if (typeof containerEl === 'string' ) {
-                document.querySelector(containerEl).innerHTML = message
-            } else {
-                containerEl.innerHTML = message
-            }
-        } else {
+        if (message === 'string') {
             this._container.innerHTML = message;
+        }
+
+        if ( typeof containerEl === 'function' ) {
+            containerEl.innerHTML = message()
         }
     }
 
