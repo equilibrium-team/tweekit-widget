@@ -401,6 +401,9 @@ export default class TweekIt {
     }
 
     _setMessage(message) {
+        console.log('setMessage message === ', message)
+        console.log('setMessage message type === ', typeof message)
+
         if (message === 'string') {
             this._container.innerHTML = message;
         }
