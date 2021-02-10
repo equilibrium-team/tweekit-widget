@@ -38,10 +38,22 @@ const generateConfig = (env = 'development') => {
   const config_output = ENV_IS_NPM
     ? {
       libraryTarget: 'umd',
-      externals: [
-        'croppie',
-        'js-base64'
-      ]
+      externals: [{
+        croppie: {
+          root: 'croppie',
+          commonjs2: 'croppie',
+          commonjs: 'croppie',
+          amd: 'croppie',
+          umd: 'croppie',
+        },
+        'js-base64': {
+          root: 'croppie',
+          commonjs2: 'croppie',
+          commonjs: 'croppie',
+          amd: 'croppie',
+          umd: 'croppie',
+        }
+      }]
     }
     : {
       libraryTarget: 'window',
