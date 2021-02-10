@@ -392,10 +392,12 @@ export default class TweekIt {
         console.log('setMessage message type === ', typeof message)
 
         if (typeof message === 'string') {
+            console.log('setMessage message IS A STRING === ', typeof message)
             this._container.innerHTML = message();
         }
 
         if ( typeof message === 'function' ) {
+            console.log('setMessage message IS A FUNCTION === ', typeof message)
             containerEl.innerHTML = message()
         }
     }
