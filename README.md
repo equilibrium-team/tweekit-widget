@@ -89,39 +89,14 @@ var tweekit = new Tweekit('#canvas0', options})
 var tweekit = new Tweekit('#tweekit-box')
 
 var the_origin = tweekit.origin
-
 var the_path = tweekit.path
 
-var the_docId = tweekit.docId
-
-var the_the_docId = tweekit.currentFile
-
-var the_tweeks = tweekit.tweeks
-
-var the_pageCount = tweekit.pageCount
+console.log(`processing files to server ${ the_origin } ${ the_path }`)
 
 var the_current_header = tweekit.headers
 tweekit.headers = {
     'Referrer Policy': 'strict-origin-when-cross-origin'
 }
-
-var the_pageNumber = tweekit.pageNumber
-tweekit.pageNumber = the_pageNumber + 1 // go to next page
-
-var the_backgroundColor = tweekit.backgroundColor
-tweekit.backgroundColor = '#FF0000'
-
-var the_alpha = tweekit.alpha
-tweekit.alpha = false
-
-var the_format = tweekit.format
-tweekit.format = "pdf"
-
-var the_resultWidth = tweekit.resultWidth
-tweekit.resultWidth = 500
-
-var the_resultHeight = tweekit.resultHeight
-tweekit.resultHeight = 900
 
 ```
 
