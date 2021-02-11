@@ -13,6 +13,7 @@ Get it by typing this on your terminal
 
 `npm i tweekit-widget`
 
+or add this script to your html file by downloading the minified version [here](https://raw.githubusercontent.com/equilibrium-team/tweekt-widget/master/_Output/tweekit/release/tweekit-widget.min.js?token=ARAJLGUQNWX2SO6UBYNA6H3AEVNDQ)
 
 # :running: Getting Started
 Once you have an account you will need Register your widget so you can generate a domain specific AppID - this just takes a moment. Click here to start the process, the only information we require is the domain where you are going to host the Widget, and your user account.

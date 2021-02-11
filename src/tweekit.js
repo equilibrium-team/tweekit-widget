@@ -105,14 +105,10 @@ export default class TweekIt {
         this._container.addEventListener("drop", (e) => {
             e.stopPropagation();
             e.preventDefault();
-            console.log('drop this  === ', this)
             this._container.classList.remove('tweekit--drag-enter')
             try {
                 var files = e.dataTransfer.files;
                 this._handleFileUpload(files);
-                console.log('_handleFileUpload: files[0]', files[0]);
-                console.log('_handleFileUpload: typeof files[0]', typeof files[0]);
-                console.log('_handleFileUpload:' + files[0].name);
             }
             catch(err) {
                 this._handleError(err)
@@ -331,7 +327,6 @@ export default class TweekIt {
     // we add it whatever it is
     addEventListener(eventName, listener) {
         if(eventName == "update") {
-            console.log('this._tweeker === ', this._tweeker)
             if(this._tweeker) {
                 this._container.addEventListener(eventName, listener);
             }
@@ -348,8 +343,6 @@ export default class TweekIt {
     }
 
     reset(callback = null) {
-        console.log('this._tweeker === ', this._tweeker)
-
         if (this._tweeker) {
             this._tweeker.destroy()
             this._tweeker = null
@@ -388,18 +381,12 @@ export default class TweekIt {
     }
 
     _setMessage(message) {
-        console.log('setMessage message === ', message)
-        console.log('setMessage message type === ', typeof message)
 
         if (typeof message === 'string') {
-            console.log('setMessage message IS A STRING === ', typeof message)
             this._container.innerHTML = message;
         }
 
         if ( typeof message === 'function' ) {
-            console.log('setMessage FUNCTION TYPE === ', typeof message)
-            console.log('setMessage FUNCTION VALUE === ', message)
-            console.log('setMessage FUNCTION VALUE EXE === ', message())
             this._container.innerHTML = message()
         }
     }
@@ -424,7 +411,6 @@ export default class TweekIt {
 
     _setPreviewUrl(url) {
         var req = new XMLHttpRequest();
-        console.log('[after _setPreviewUrl url  === ', url)
         req.open("GET", url);
         req.responseType = "blob";
         for(let headerName in this._headers) {
@@ -434,7 +420,6 @@ export default class TweekIt {
         req.onload = async function () {
             if (req.status >= 200 && req.status <= 210) {
                 self._setMessage("");
-                console.log("img loaded");
 
                 self._container.style.border = "1px solid black";
                 self._container.style.animation = "none";
@@ -457,12 +442,9 @@ export default class TweekIt {
 
                 self._tweeker = new Croppie(self._container, self._tweekerOptions);
 
-                console.log('[after new croppie] self._tweeker === ', self._tweeker)
 
                 const reqImgUrl = URL.createObjectURL(req.response)
 
-                console.log('[after req.response=== ', req.response)
-                console.log('[after reqImgUrl=== ', reqImgUrl)
 
                 await self._tweeker
                     .bind({ url: reqImgUrl })
@@ -478,7 +460,7 @@ export default class TweekIt {
                         self._container.dispatchEvent(event);
                     })
                     .catch((err) => {
-                        console.log('[self._tweeker] [err] ==== ', err)
+                        console.error('Tweekit error: ', err)
                     })
             }
         };
@@ -512,8 +494,6 @@ export default class TweekIt {
             throw err
         }
 
-        console.log('_sendFileToServer [data] === ', data)
-
         this._docId = data.docId;
         let prevPath = this.path;
         let nc = `_=${Math.random()}`;
@@ -538,9 +518,6 @@ export default class TweekIt {
             } catch( err) {
                 reject(err)
             }
-
-            console.log('_checkFilename typeof data == ', typeof data)
-            console.log('_checkFilename data == ', data)
 
             if (data) {
                 const isError =
@@ -589,7 +566,7 @@ export default class TweekIt {
     }
 
     _handleError(err) {
-        console.log('_handleError [err] === ', err)
+        console.error('Tweekit error: ', err)
         const detail = {
             error: err
         }
