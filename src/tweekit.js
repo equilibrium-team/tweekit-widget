@@ -490,7 +490,12 @@ export default class TweekIt {
 
         try {
             data = await resp.json();
+            if ( data.status && data.status === 500 ) {
+                this._handleError({ ...data })
+                throw ({ ...data })
+            }
         } catch(err) {
+            this._handleError(err)
             throw err
         }
 
