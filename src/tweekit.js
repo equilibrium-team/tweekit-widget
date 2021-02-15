@@ -347,12 +347,13 @@ export default class TweekIt {
             this._tweeker.destroy()
             this._tweeker = null
             this._currFile = null
-            this._setMessage(this._message)
         }
 
         if (callback) {
             callback()
         }
+
+        this._setMessage(this._options.message)
     }
 
     async result(isDownload = true, hasCrop = true) {
@@ -517,12 +518,15 @@ export default class TweekIt {
             // let resp = null
             let data = null
 
-            try {
-                data = await this._doReq(u)
-                    .then(response => response.json())
-            } catch( err) {
-                reject(err)
-            }
+            data = await this._doReq(u)
+                .then(response => {
+                    const jsonResponse = response.json()
+                    return jsonResponse
+                })
+                .catch( err => {
+                    reject(err)
+                })
+
 
             if (data) {
                 const isError =
@@ -531,7 +535,13 @@ export default class TweekIt {
                     data.docType.length === 0
 
                 if (isError) {
-                    reject("MediaRich Server Error")
+                    let errmsg = ""
+                    if (data.extensions.length > 1) {
+                        errmsg = `The filetypes uploaded are not supported `
+                    } else {
+                        errmsg = `The filetype " ${data.extensions[0]} " is not supported `
+                    }
+                    this._handleError(errmsg)
                 } else {
                     this._currFile = {
                         ...this._currFile ,
