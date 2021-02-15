@@ -1,6 +1,6 @@
 {
   "name": "tweekit-widget",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "description": "Tweek It widget!",
   "entry point": "dist/release/tweekit-widget.min.js",
   "organization": "equilibrium-team",
