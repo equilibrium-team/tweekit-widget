@@ -5,6 +5,11 @@
   "entry point": "dist/release/tweekit-widget.min.js",
   "organization": "equilibrium-team",
   "main": "dist/release/tweekit-widget.min.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/equilibrium-team/tweekit-widget.git"
+  },
+  "homepage": "https://tweekit.io",
   "publishConfig": {
     "access": "public"
   },
