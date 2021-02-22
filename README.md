@@ -1,6 +1,6 @@
 # :rocket: Introduction
 
-**TweekIT** is a simple yet powerful developer-focused file transformation tool.
+Equilibrium's first decentralized application (dApp) normalizes any filetype (ie. Photoshop to .png or pdf to .jpeg) to fix any upload issues for your customers, eliminating frustration and reducing signup/import issues with your web, app or service instantly.
 
 TweekIT's core technology is based on the industry-leading MediaRich engine by Equilibrium Inc, which is currently powering some of the world's largest B2B portals.
 
