@@ -16,6 +16,7 @@
   "scripts": {
     "test": "webpack-dev-server --mode development"
   },
+  "keywords": ["transformation","imaging","tweekit","tweek","file","conform","encoding","Ergonomic","endpoints","developer","Equilibrium","CPUcoin","content","PDF","multipage","B2B","download","publish","secure","collaborate","service","workflow","mediarich","dynamic","demo","documentation","server","images","normalization","upload","finalize","review","convert","graphics","crop","cropper","zoom","widget"],
   "author": "Equilibrium",
   "license": "ISC",
   "devDependencies": {
