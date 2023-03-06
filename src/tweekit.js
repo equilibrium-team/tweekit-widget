@@ -20,6 +20,7 @@ export default class TweekIt {
         this._protocol = GLBL_PROTOCOL;
         this._host = GLBL_APIURL;
         this._port = GLBL_PORT;
+	this._endpoint = 'preview';
         this._origin = `${this._protocol}://${this._host}:${this._port}`;
         this._counter = 0;
         this._tweeker = null;
@@ -32,6 +33,7 @@ export default class TweekIt {
         this._alpha = false;
         this._format = 'jpg';
         this._docId = null;
+	this._docIdBuf = null;
         this._tweekerOptions = {
             enableResize: true,
             enforceBoundary: true,
@@ -40,6 +42,11 @@ export default class TweekIt {
             }
         };
 
+        // Stable Diffusion
+        this._useSD = false;
+        this._textPrompt = "";
+	this._strength = 0.5;
+	this._sdCoors = [];
 
         this._container = document.querySelector(this._selector);
         this._container.classList.add('tweekit-container');
@@ -128,8 +135,28 @@ export default class TweekIt {
          return `/tweekit/api/image/preview/${this._docId}`;
     }
 
+    get endpoint() {
+	return this._endpoint;
+    }
+
+    set endpoint(np) {
+	this._endpoint = np;
+    }
+
     get docId() {
         return this._docId;
+    }
+
+    set docId(di) {
+        this._docId = di;
+    }
+
+    get docIdBuf() {
+        return this._docIdBuf;
+    }
+
+    set docIdBuf(di) {
+        this._docIdBuf = di;
     }
 
     get tweeks() {
@@ -138,6 +165,14 @@ export default class TweekIt {
             r = this._tweeker.get();
         }
         return r;
+    }
+
+    set sdCoors(c){
+	this._sdCoors = c;
+    }
+
+    get sdCoors(){
+	return this._sdCoors;
     }
 
     get pageCount() {
@@ -152,6 +187,30 @@ export default class TweekIt {
         let oldVal = this._origin;
         this._origin = origin;
         this._dispatchPropertyChange('origin', oldVal, origin);
+    }
+
+    get useSD() {
+        return this._useSD;
+    }
+
+    set useSD(us) {
+        this._useSD = us;
+    }
+
+    get textPrompt() {
+        return this._textPrompt;
+    }
+
+    set textPrompt(p) {
+        this._textPrompt = p;
+    }
+
+    get strength() {
+    	return this._strength;
+    }
+    
+    set strength(st) {
+    	this._strength = st;
     }
 
     get headers() {
@@ -289,17 +348,31 @@ export default class TweekIt {
                 params.fmt = this._format
             }
 
+            // Stable Diffusion
+            params.useSD = this._useSD;
+            params.textPrompt = this._textPrompt;
+	    params.textStrength = this._strength;
+
             params.alpha = this._alpha;
             params.page = this._pageNumber;
 
             if (hasCrop) {
-                params.elliptical = this.elliptical;
                 let d = this.tweeks;
-                params.x1 = Math.floor((d.points[0]));
-                params.y1 = Math.floor((d.points[1]));
-                params.x2 = Math.floor((d.points[2]));
-                params.y2 = Math.floor((d.points[3]));
+		let c = this._sdCoors;
                 let z = d.zoom;
+                params.elliptical = this.elliptical;
+	    	if(c[0] != undefined){
+		    params.x1 = Math.floor(c[0]);
+		    params.y1 = Math.floor(c[1]);
+		    params.x2 = Math.floor(c[2]);
+		    params.y2 = Math.floor(c[3]);
+		}
+		else{
+                    params.x1 = Math.floor((d.points[0]));
+                    params.y1 = Math.floor((d.points[1]));
+                    params.x2 = Math.floor((d.points[2]));
+                    params.y2 = Math.floor((d.points[3]));
+		}
             }
 
             // params.width = Math.floor((d.points[2] - d.points[0])*z);
@@ -371,6 +444,48 @@ export default class TweekIt {
         return data
     }
 
+    async preview(){
+        let url = `${this._origin}${this.path}`;
+        const data = await this._doReq(url)
+            .then(response => {
+		let r = response;
+		return [r.blob(), r.headers.get('x-cpucoinminer-imageheight'), r.headers.get('x-cpucoinminer-imagewidth')]
+		response.blob()
+	    })
+        return data
+    }
+
+    async generate() {
+	const reqParams = this.getParams(true, false, false)
+
+	// let url = `${this._origin}/tweekit/api/image/generate${this._docId}?${urlParams}`;
+	let url = `${this._origin}/tweekit/api/image/generate/${this._docId}`;
+
+	// Append request parameters to form data (Th.)
+	/*let fd = new FormData();
+	for(let param in reqParams){
+	    fd.append(param, reqParams[param])
+	}*/
+
+	// Run a preview call on the resulting docID (Th.)
+        const data = await this._doReqGen(url, reqParams)
+            .then(response => response.json())
+        return data
+    }
+
+    /*async downloadFromPreview(filename, hasCrop = true, callback = null) {
+	// TODO: Rewrite code to download the preview window blob instead of just running the previous request a second time
+
+        // const file = await this.result(true, hasCrop)
+        const file = document.getElementById("imageBlob").src;
+        let el = document.createElement("a");
+        // el.setAttribute('href', URL.createObjectURL(file))
+        el.setAttribute('href', file);
+        el.setAttribute('download', `${filename}.${this.format}`);
+        el.click();
+
+        this.reset(callback)
+    }*/
     async download(filename, hasCrop = true, callback = null) {
         const file = await this.result(true, hasCrop)
         let el = document.createElement("a");
@@ -473,6 +588,19 @@ export default class TweekIt {
             cache: "no-cache",
             credentials: "same-origin",
             headers: new Headers(this._headers)
+        });
+    }
+
+    _doReqGen(u, formData) {
+	// this._headers add Content-type to "application/json;charset=UTF-8"
+	let h = {...this._headers};
+	h['content-type'] = "application/json;charset=UTF-8"
+        return fetch(u, {
+	    method: "POST",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: new Headers(h),
+	    body: formData
         });
     }
 
