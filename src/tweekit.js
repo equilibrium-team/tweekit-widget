@@ -32,7 +32,7 @@ export default class TweekIt {
         this._resultHeight = -1;
         this._alpha = false;
         this._format = 'jpg';
-        this._docId = null;
+        this._docId = '00000000000000000000000000000000';
 	this._docIdBuf = null;
         this._tweekerOptions = {
             enableResize: true,
@@ -45,8 +45,8 @@ export default class TweekIt {
         // Stable Diffusion
         this._useSD = false;
         this._textPrompt = "";
-	this._strength = 0.5;
-	this._sdCoors = [];
+	    this._strength = 0.7;
+	    this._sdCoors = [];
 
         this._container = document.querySelector(this._selector);
         this._container.classList.add('tweekit-container');
@@ -351,7 +351,7 @@ export default class TweekIt {
             // Stable Diffusion
             params.useSD = this._useSD;
             params.textPrompt = this._textPrompt;
-	    params.textStrength = this._strength;
+	        params.textStrength = this._strength;
 
             params.alpha = this._alpha;
             params.page = this._pageNumber;
@@ -456,19 +456,18 @@ export default class TweekIt {
     }
 
     async generate() {
-	const reqParams = this.getParams(true, false, false)
+        const reqParams = this.getParams(true, false, false)
 
-	// let url = `${this._origin}/tweekit/api/image/generate${this._docId}?${urlParams}`;
-	let url = `${this._origin}/tweekit/api/image/generate/${this._docId}`;
+        // let url = `${this._origin}/tweekit/api/image/generate${this._docId}?${urlParams}`;
+        let url = `${this._origin}/tweekit/api/image/generate/${this._docId}`;
 
-	// Append request parameters to form data (Th.)
-	/*let fd = new FormData();
-	for(let param in reqParams){
-	    fd.append(param, reqParams[param])
-	}*/
-
-	// Run a preview call on the resulting docID (Th.)
-        const data = await this._doReqGen(url, reqParams)
+        // Append request parameters to form data (Th.)
+        let fd = {
+                "textPrompt": this._textPrompt,
+                "textStrength": this._strength
+            };
+        // Run a preview call on the resulting docID (Th.)
+        const data = await this._doReqGen(url, fd)
             .then(response => response.json())
         return data
     }
@@ -592,16 +591,16 @@ export default class TweekIt {
     }
 
     _doReqGen(u, formData) {
-	// this._headers add Content-type to "application/json;charset=UTF-8"
-	let h = {...this._headers};
-	h['content-type'] = "application/json;charset=UTF-8"
+        // this._headers add Content-type to "application/json;charset=UTF-8"
+        let h = {...this._headers};
+        h['Content-Type'] = "application/json"
         return fetch(u, {
-	    method: "POST",
-            cache: "no-cache",
-            credentials: "same-origin",
-            headers: new Headers(h),
-	    body: formData
-        });
+                method: "POST",
+                cache: "no-cache",
+                credentials: "same-origin",
+                headers: h,
+                body: JSON.stringify(formData)
+            });
     }
 
     async _sendFileToServer(formData, status) {
